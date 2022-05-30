@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Trukes.id - Blast WA</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<body>
+<div class="container-fluid my-4">
+  <div class="col-12 row mb-2">
+      <label for="date" class="col-auto col-form-label">Select Date</label>
+      <div class="col-3">
+	  <% if (sdate && edate) { %>
+	  <input id="date" type="text" class="form-control" name="dates" value="<%= sdate %> - <%= edate %>" />
+	  <% } else { %>
+          <input id="date" type="text" class="form-control" name="dates" />
+	  <% } %>
+      </div>
+  </div>
+  <div class="col-12 row mb-3">
+      <button id="btn-download" type="button" class="col-auto btn btn-sm btn-primary mx-3">Download CSV</button>
+  </div>
+  <hr/>
+  <table class="table table-hover small">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Start</th>
+          <th scope="col">End</th>
+          <th scope="col">Total Time</th>
+          <th scope="col">Success</th>
+          <th scope="col">Failed</th>
+          <th scope="col">Filtered</th>
+          <th scope="col">Success Message</th>
+          <th scope="col">Failed Message</th>
+          <th scope="col">Message AVG</th>
+        </tr>
+      </thead>
+      <tbody>
+	<% for(var i=0; i < records.length; i++) { %>
+        <tr>
+	  <th scope="row"><a href="/records/?summary_id=<%= records[i].id %>"><%= records[i].id %></a></th>
+	  <td><%= records[i].phone %></td>
+          <td><%= moment(records[i].start).format('dddd, MMM D YYYY, HH:mm') %></td>
+          <td><%= moment(records[i].end).format('dddd, MMM D YYYY, HH:mm') %></td>
+	  <td><%= parseInt(records[i].total_time/60000) %> menit</td>
+	  <td><%= records[i].success %></td>
+	  <td><%= records[i].failed %></td>
+	  <td><%= records[i].blocked %></td>
+	  <td><%= records[i].success_message %></td>
+	  <td><%= records[i].failed_message %></td>
+	  <td><%= records[i].message_avg.toFixed(2) %></td>
+        </tr>
+	<% } %>
+      </tbody>
+  </table>
+  <nav>
+  <ul class="pagination justify-content-center">
+<% if (pagination.current > 0) { %>
+  <li class="page-item">
+    <a class="page-link" href="?page=<%= pagination.current-1 %>&sdate=<%= sdate %>&edate=<%= edate %>" tabindex="-1" aria-disabled="true">Previous</a>
+  </li>
+  <% } else { %>
+  <li class="page-item disabled">
+    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+  </li>
+  <% } %>
+
+  <% if (pagination.current-5 > 0) { %>
+  <li class="page-item"><a class="page-link" href="?page=0&sdate=<%= sdate %>&edate=<%= edate %>">1</a></li>
+  <% } %>
+
+  <% if (pagination.current-5 > 1) { %>
+    <li class="page-item"><span class="page-link">&hellip;</span></li>
+  <% } %>
+
+  <% for(let i=1; i <= pagination.numPages; i++) { %>
+  <% if (i-1 == pagination.current) { %>
+  <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
+  <% } else { %>
+    <% if (i > pagination.current-5 && i < pagination.current+5) { %>
+      <li class="page-item"><a class="page-link" href="?page=<%= i-1 %>&sdate=<%= sdate %>&edate=<%= edate %>"><%= i %></a></li>
+    <% } %>
+  <% } %>
+  <% } %>
+
+  <% if (pagination.current+5 < pagination.numPages) { %>
+    <li class="page-item"><span class="page-link">&hellip;</span></li>
+  <% } %>
+
+  <% if (pagination.current+4 < pagination.numPages) { %>
+  <li class="page-item"><a class="page-link" href="?page=<%= pagination.numPages-1 %>&sdate=<%= sdate %>&edate=<%= edate %>"><%= pagination.numPages %></a></li>
+  <% } %>
+
+  <% if (pagination.current < pagination.numPages-1) { %>
+  <li class="page-item">
+    <a class="page-link" href="?page=<%= pagination.current+1 %>&sdate=<%= sdate %>&edate=<%= edate %>">Next</a>
+  </li>
+  <% } else { %>
+  <li class="page-item disabled">
+    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+  </li>
+<% } %>
+  </ul>
+  </nav>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script type="text/javascript">
+$(function(){
+  $('input[name="dates"]').daterangepicker({
+	  opens: 'left',
+	  locale: {
+            format: 'YYYY-MM-DD'
+          }
+    }, function(start, end, label) {
+    let sdate = start.format('YYYY-MM-DD');
+    let edate = end.format('YYYY-MM-DD');
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('sdate', sdate);
+    urlParams.set('edate', edate);
+    window.location.search = urlParams;
+  });
+  $('button#btn-download').click(function() {
+    downloadFile();
+  });
+});
+function downloadFile() {
+    var link = document.createElement("a");
+    var uri = '/downloads_summary/' + window.location.search;
+    var name = '';
+    link.setAttribute('download', name);
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+function copy(text) {
+  var el = document.createElement('textarea');
+  el.setAttribute('readonly', true);
+  el.setAttribute('contenteditable', true);
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  el.setSelectionRange(0, el.value.length);
+  result = document.execCommand('copy');
+  document.body.removeChild(el);
+  return false;
+}
+</script>
+</body>
+</html>

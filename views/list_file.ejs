@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Trukes.id - Blast WA</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<body>
+<div class="container-fluid my-4">
+  <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">File Name</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+	<% for(var i=0; i < file_list.length; i++) { %>
+        <tr>
+          <th scope="row"><%= i+1 %></th>
+          <td><%= file_list[i] %></td>
+          <td>
+	    <a href="#" class="text-decoration-none badge bg-secondary" onclick="copy('<%= file_list[i] %>')">copy</a>
+	    <a href="/images/<%= file_list[i] %>" class="text-decoration-none badge bg-info" target="_blank">preview</a>
+	  </td>
+        </tr>
+	<% } %>
+      </tbody>
+  </table>
+  <a href="/upload" class="mt-4 btn btn-primary">Upload File</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function copy(text) {
+  var el = document.createElement('textarea');
+  el.setAttribute('readonly', true);
+  el.setAttribute('contenteditable', true);
+  el.value = text;
+  document.body.appendChild(el);
+  el.select();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  el.setSelectionRange(0, el.value.length);
+  result = document.execCommand('copy');
+  document.body.removeChild(el);
+  return false;
+}
+</script>
+</body>
+</html>
