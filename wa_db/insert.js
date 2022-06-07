@@ -4,39 +4,56 @@ const connection = require("./db_config");
 var queryAsync = Promise.promisify(connection.query.bind(connection));
 connection.connect();
 
-addBlacklist();
+readBlacklist();
 
 function addRecord() {
-for(let i = 1; i < 2; i++) {
-let number = '08123123123' + pad(i, 2);
-    let sql = `INSERT INTO wa_blast_record (sender, receiver, message, status)
-               VALUES ('08222222222', `+number+`, 'This is blast message from linux', 1)`;
+	for(let i = 1; i < 2; i++) {
+		let number = '08123123123' + pad(i, 2);
+		let sql = `INSERT INTO wa_blast_record (sender, receiver, message, status)
+	       VALUES ('08222222222', `+number+`, 'This is blast message from linux', 1)`;
 
-    queryAsync(sql).then(function(results) {
-        console.log("1 record inserted");
-    });
+		queryAsync(sql).then(function(results) {
+			console.log("1 record inserted");
+		});
+	}
 }
+
+function readBlacklist() {
+  let whereQuery = 'WHERE status = 1 LIMIT 10';
+  queryAsync('SELECT phone, role, resi, product FROM wa_blast_blacklist ' + whereQuery)
+  .then(function(results) {
+    let phone_list = {};
+    results.forEach(function(item, index){ 
+      phone_list[item.phone] = {'role': item.role, 'resi': item.resi, 'product': item.product};
+    });
+    console.log(phone_list);
+    if ('6285100394565' in phone_list) {
+        console.log('exists');
+    } else {
+    	console.log('not exists');
+    }
+  });
 }
 
 function addBlacklist() {
-  let ll = [['Mimi Cendana', '6082177078818', 'Yes-No-Pengirim-old'], ['Pempek Daily', '6282180581661', 'Yes-No-Pengirim-old'], ['Pempek Sinho', '628982029100', 'Yes-No-Pengirim-old'], ['Pempek Sinho 15 Ilir', '628197805558', 'Yes-No-Pengirim-old'], ['Yuni/Dapur Tralala', '628111019985', 'No-No-Pengirim-old'], ['Syamsudin', '6285100394565', 'Yes-No-Pengirim-old'], ['Stephanie', '6281286691828', 'Yes-No-Penerima-'], ['Nency Handriani / Ester Handriani', '6282233297005', 'Yes-No-Penerima-'], ['Riana Valerine', '6281318180216', 'Yes-No-Penerima-'], ['Febdian Syaputra', '6285263088871', 'Yes-No-Penerima-'], ['Bunda Rina', '628567229932', 'Yes-No-Penerima-'], ['Abdul Hamid', '6285771996061', 'Yes-No-Penerima-'], ['Mba Nanda', '6285921066301', 'Yes-No-Penerima-'], ['Yoga', '628112285850', 'Yes-No-Penerima-'], ['Ely (toko Minyak)', '6281282251798', 'Yes-No-Penerima-'], ['Rivaldy Tama', '6289656947383', 'Yes-No-Penerima-'], ['Janti K', '62818828567', 'Yes-No-Penerima-'], ['Lia', '6281314578227', 'Yes-No-Penerima-'], ['Felicia', '6281234567188', 'Yes-No-Penerima-'], ['Aghata Ninik (Popo)', '6287882255411', 'Yes-No-Penerima-'], ['Sukma Rani', '628118071839', 'Yes-No-Penerima-'], ['Rawendra', '6281311262221', 'Yes-No-Penerima-old'], ['Kenny', '6281380685095', 'Yes-No-Penerima-old'], ['Oline', '6285313657771', 'Yes-No-Penerima-new'], ['Rudi Pane', '6285216831728', 'Yes-No-Penerima-new'], ['Larry', '6289636517346', 'Yes-No-Penerima-new'], ['Endang Suprihatin', '6281282605004', 'Yes-No-Penerima-new'], ['Pak Irwan', '628179340340', 'Yes-No-Penerima-new'], ['Tessa', '6281317615072', 'Yes-No-Penerima-old'], ['Pempek Ummah ', '6281373268148', 'No-No-Pengirim-old'], ['Fenny', '6281390999998', 'Yes-No-Penerima-new'], ['Nyimas Zuraidah Riza', '6281315188277', 'Yes-No-Penerima-new'], ['Ibu Lidya', '6287839456210', 'Yes-No-Penerima-new'], ['Mira Mustika / Pempek Mira', '6282181854322', 'No-No-Pengirim-old'], ['Marvels Kitchen', '6285266852456', 'No-No-Pengirim-old'], ['Selvy Laura', '6281380048034', 'Yes-No-Penerima-new'], ['Ibu Lily', '6285100413029', 'Yes-No-Penerima-new'], ['Rinaldi Tri Martono', '6285219791927', 'Yes-No-Penerima-old'], ['Lili', '6281385750240', 'Yes-No-Penerima-new'], ['Dr Minerva', '6282115997785', 'Yes-No-Penerima-new'], ['Nenek Yul / Dian', '6285313254585', 'Yes-No-Penerima-new'], ['Fenni', '62811926685', 'Yes-No-Penerima-old'], ['Citra', '6281286128771', 'Yes-No-Penerima-old'], ['Mr Fuan', '62811788866', 'Yes-No-Penerima-new'], ['Eka Valentina', '6287821733127', 'Yes-No-Penerima-new'], ['B Melky', '6282182882810', 'Yes-No-Penerima-new'], ['Ibu Eni', '628122423632', 'Yes-No-Penerima-new'], ['Fenny', '62811105962', 'Yes-No-Penerima-new'], ['Liya Aspihani', '628111335802', 'Yes-No-Penerima-new'], ['Suhery Handoko / Jeje', '628983012485', 'Yes-No-Penerima-new'], ['Ibu Tari Arista', '62816853759', 'Yes-No-Penerima-new'], ['Felika Aileen', '628119716700', 'Yes-No-Penerima-new'], ['Clemen Fink', '6285823032228', 'Yes-No-Penerima-new'], ['Ibu Lusi Gunawan', '6281371198292', 'Yes-No-Penerima-new'], ['Leny', '6281367727888', 'Yes-No-Penerima-old'], ['Alia / Pempek che cho', '6282176379290', 'No-No-Pengirim-old'], ['Ananda Wilson', '62811710049', 'Yes-No-Penerima-new'], ['Gevin', '6285890131287', 'Yes-No-Penerima-new'], ['Faustina Lianto', '6282131351150', 'Yes-No-Penerima-old'], ['Nurwita Novitasari', '6281320356767', 'Yes-No-Penerima-new'], ['Ibu Ikayani', '6281808798899', 'Yes-No-Penerima-new'], ['Bebi Arifin', '6281289761230', 'Yes-No-Penerima-new'], ['Sandra', '6287897373030', 'Yes-No-Penerima-new'], ['Nonon', '628129033691', 'Yes-No-Penerima-new'], ['Livi Lim', '628158905622', 'Yes-No-Penerima-old'], ['Ibu Ida', '628122815915', 'Yes-No-Penerima-new'], ['Liliani', '62817135368', 'Yes-No-Penerima-new'], ['Eka Ratna Sari', '628194801992', 'Yes-No-Penerima-new'], ['Neng Anti', '6281519053538', 'Yes-No-Penerima-old'], ['Yavia', '6281380804964', 'Yes-No-Penerima-new'], ['Lina Bustam', '6285718418848', 'Yes-No-Penerima-old'], ['Marlinda', '6285717917902', 'Yes-No-Penerima-old'], ['Ratna Iskandar', '62816923914', 'Yes-No-Penerima-old'], ['Desma', '6289617660227', 'Yes-No-Penerima-new'], ['Ibu Davina', '6281617677707', 'Yes-No-Penerima-new'], ['Siska Sabrina', '62895321171712', 'Yes-No-Penerima-new'], ['Adifa', '6282282310183', 'Yes-No-Penerima-new'], ['Tati', '62816709200', 'Yes-No-Penerima-old'], ['Sheilla', '62811909789', 'Yes-No-Penerima-new'], ['Amei - Pempek Bumbu', '6281281439980', 'Yes-No-Penerima-old'], ['Hendri Gunawan', '6285669549207', 'Yes-No-Penerima-new'], ['Efronny Pardede', '6285283861862', 'Yes-No-Penerima-new'], ['Bpk Elva', '6282295222925', 'Yes-No-Penerima-new'], ['Michelle Aurellia', '6281233828880', 'Yes-No-Penerima-new'], ['Sri Purwanty', '6281285151217', 'Yes-No-Penerima-new'], ['Devi/Arief', '6282240454071', 'Yes-No-Penerima-new'], ['Maretta Evelyna', '6281212637151', 'Yes-No-Penerima-new'], ['Hans Kristian', '6281263605969', 'Yes-No-Penerima-new'], ['Ayuastuti Wijianingrum', '6281314859865', 'Yes-No-Penerima-new'], ['Enggel', '628179893880', 'Yes-No-Penerima-old'], ['Yulia Azarina', '6281374506717', 'No-No-Pengirim-old'], ['M. Chairul', '628158049955', 'Yes-No-Penerima-new'], ['Dewi', '6282278599525', 'Yes-No-Penerima-new'], ['Tasya', '628121827108', 'Yes-No-Penerima-old'], ['Ratih', '628117106066', 'Yes-No-Penerima-old'], ['Nikita Oktara', '6281311123450', 'Yes-No-Penerima-new'], ['Dinda', '62818721033', 'Yes-No-Penerima-new'], ['Ibu Aji Priatun', '628161421943', 'Yes-No-Penerima-new'], ['Chaidir Johan', '6281513364743', 'Yes-No-Penerima-new'], ['Elisayana', '628170006705', 'Yes-No-Penerima-new'], ['Veni Meroza', '6285714832714', 'Yes-No-Penerima-old'], ['Yoga', '62818669911', 'Yes-No-Penerima-new'], ['Bpk Frido L', '628119112867', 'Yes-No-Penerima-new'], ['Yusuf Marasade', '628118783003', 'Yes-No-Penerima-new'], ['Lily Purnama Sari', '62818711247', 'Yes-No-Penerima-old'], ['Maralus', '6287788791177', 'Yes-No-Penerima-new'], ['Ridwan Nursamsi', '6281519006119', 'Yes-No-Penerima-new'], ['Lia Yulianti', '6285315960916', 'Yes-No-Penerima-old'], ['Nora', '6281274175430', 'Yes-No-Penerima-new'], ['Gazalanovatria', '6282132375350', 'Yes-No-Penerima-new'], ['Shellen', '6281211566644', 'Yes-No-Penerima-new'], ['Juli Jj', '62816898264', 'Yes-No-Penerima-new'], ['Lingga', '6281519028999', 'Yes-No-Penerima-old'], ['Restu redho resky relandy', '6281212123898', 'Yes-No-Penerima-new'], ['Hery', '62895410624380', 'Yes-No-Penerima-new'], ['Frie Ummu Arya Aufa', '6281809149067', 'Yes-No-Penerima-new'], ['Willy', '628118004333', 'Yes-No-Penerima-new'], ['Suli', '6287877111333', 'Yes-No-Penerima-new'], ['Ivan Pradipta', '6281387000891', 'Yes-No-Penerima-new'], ['Santi', '6282112342291', 'Yes-No-Penerima-new'], ['Sintia Devi', '6281283092629', 'Yes-No-Penerima-new'], ['Teni Sondak', '628127142345', 'Yes-No-Penerima-new'], ['Dwi Ayuningtyas', '628164861584', 'Yes-No-Penerima-new'], ['M. Alwan Azhari', '6282177400524', 'Yes-No-Penerima-new'], ['Greselda Koordi', '628121074693', 'Yes-No-Penerima-new'], ['Florensia Tanian', '62811737771', 'Yes-No-Penerima-old'], ['Linda', '6282113257757', 'Yes-No-Penerima-old'], ['Bu Dokter Bu Yenny', '6282112571844', 'Yes-No-Penerima-new'], ['Afif / Nadya', '6285892810752', 'Yes-No-Penerima-new'], ['Dwi Agus Hadi Prayitno', '6285716979384', 'Yes-No-Penerima-old'], ['Rezqi Hakim', '6285278517942', 'Yes-No-Penerima-new'], ['Bp Sukaking', '628128686580', 'Yes-No-Penerima-old'], ['Indra Siahaan', '628561188939', 'Yes-No-Penerima-new'], ['Cici Laviani', '6281929034625', 'Yes-No-Penerima-new'], ['Bpk Neilmaldrin Noor', '6282213092611', 'Yes-No-Penerima-new'], ['Agnes Siregar', '628116061025', 'Yes-No-Penerima-new'], ['Gerry Gabriel Wijaya', '628118805559', 'Yes-No-Penerima-new'], ['Ibu Novrida', '6281398872389', 'Yes-No-Penerima-new'], ['Joni / Yani / Acien', '62811978212', 'Yes-No-Penerima-new'], ['Mrs Yenny', '62811951112', 'Yes-No-Penerima-old'], ['Ibu Yati', '6281283531470', 'Yes-No-Penerima-old'], ['Bpk Octavianus Ken', '6281776767873', 'Yes-No-Penerima-new'], ['Tania', '6281930788000', 'Yes-No-Penerima-new'], ['Geby', '6282334334914', 'Yes-No-Penerima-new'], ['M. Mirza S', '6281367698844', 'Yes-No-Penerima-old'], ['Ibu Ida', '628121333467', 'Yes-No-Penerima-new'], ['Tomy', '6281221502192', 'Yes-No-Penerima-new'], ['Ibu Nanik', '6281320719652', 'Yes-No-Penerima-new'], ['Wayong', '6281286000613', 'Yes-No-Penerima-new'], ['Joni Chandra', '6281285881798', 'Yes-No-Penerima-new'], ['Apek / Elvina', '6282175495555', 'Yes-No-Penerima-new'], ['Lina Susanty', '628112559899', 'Yes-No-Penerima-old'], ['Andi Naura', '6281246411143', 'Yes-No-Penerima-new'], ['Poerwanto', '6281319607374', 'Yes-No-Penerima-old'], ['Mutiara', '628989958625', 'Yes-No-Penerima-new'], ['Amelia', '6283834578700', 'Yes-No-Penerima-new'], ['Nana', '6285776522987', 'Yes-No-Penerima-new'], ['Ibu Nini Bani', '628123237404', 'Yes-No-Penerima-new'], ['Junersen Husin', '628111881483', 'Yes-No-Penerima-new'], ['Bapak Firdaus', '628129605959', 'Yes-No-Penerima-new'], ['Bapak Selo Purna Atmani', '628119817889', 'Yes-No-Penerima-new'], ['Yohana Tisannie', '6283177641281', 'Yes-No-Penerima-old'], ['Rian', '6287885461978', 'Yes-No-Penerima-new'], ['Listya Dewi (Kedai 07)', '6285691289868', 'Yes-No-Penerima-old'], ['Kezia', '62817761959', 'Yes-No-Penerima-old'], ['Pondok Cek Ema', '6289508965884', 'No-No-Pengirim-old'], ['Zubaidah', '6285213202949', 'Yes-No-Penerima-new'], ['Febby Ayu Safitri', '628176662221', 'Yes-No-Penerima-new'], ['Mba Yul', '62811101678', 'Yes-No-Penerima-new'], ['Jenny', '6281939155518', 'Yes-No-Penerima-new'], ['Wie Wie', '628128005230', 'Yes-No-Penerima-new'], ['Deswari', '6281932880800', 'Yes-No-Penerima-old'], ['Agnes Dyah K / Christ', '6285866242808', 'Yes-No-Penerima-new'], ['Suzanne', '628129417078', 'Yes-No-Penerima-new'], ['Mega / Mikhaela', '62818877766', 'Yes-No-Penerima-new'], ['Nikita Omiki', '6281382294579', 'Yes-No-Penerima-old'], ['Jessica Kristin', '6285777186710', 'Yes-No-Penerima-new'], ['Kiki Renata', '628159666511', 'Yes-No-Penerima-old'], ['Sriyanti Huisiang', '6282112139305', 'Yes-No-Penerima-old'], ['Steven Gunawan', '628111584884', 'Yes-No-Penerima-new'], ['Ibu Yusi Widianingsih', '6285773640384', 'Yes-No-Penerima-new'], ['Yani', '6281905855594', 'Yes-No-Penerima-new'], ['Rizka Novita Sari', '6281320036653', 'Yes-No-Penerima-new'], ['Denny', '6281381880340', 'Yes-No-Penerima-old'], ['Sheren', '6282180841585', 'Yes-No-Penerima-new'], ['Virlu Regina', '6281368022998', 'Yes-No-Penerima-new'], ['Nova Indri', '628127116990', 'Yes-No-Penerima-new'], ['Muhammad Syahab', '628121840977', 'Yes-No-Penerima-new'], ['Yenny Wiryo', '628161154939', 'Yes-No-Penerima-new'], ['Ibu Nila Wisaksono', '6281219811200', 'Yes-No-Penerima-new'], ['Ani', '6285758618557', 'Yes-No-Penerima-new'], ['Enel', '6289605910158', 'Yes-No-Penerima-new'], ['Lia', '6281377779990', 'Yes-No-Penerima-new'], ['Vitrie', '6285730750400', 'Yes-No-Penerima-new'], ['Rosmarini', '6281282956531', 'Yes-No-Penerima-new'], ['Erin', '6287888055222', 'Yes-No-Penerima-new'], ['Bpk Alex / Ellis', '6287782578910', 'Yes-No-Penerima-new'], ['Widya K /Ibu Indra', '6282219004607', 'Yes-No-Penerima-new'], ['Ibu Ola', '628161822523', 'Yes-No-Penerima-new'], ['Florence', '6282182684866', 'Yes-No-Penerima-old'], ['Siaw Swie Djing', '628563535777', 'Yes-No-Penerima-new'], ['Bpk Andra', '6281288672553', 'Yes-No-Penerima-new'], ['Feranika', '6285216390125', 'Yes-No-Penerima-new'], ['Cecilia', '6287788993983', 'Yes-No-Penerima-old'], ['Ernawaty', '6281218506648', 'Yes-No-Penerima-new'], ['Andy', '6287808781893', 'Yes-No-Penerima-new'], ['Bu Yoke Syamsidar', '628119004550', 'Yes-No-Penerima-new'], ['Detha Daufina / Ina Sukmawati / Ardisa Lestari', '6285884813203', 'Yes-No-Penerima-new'], ['Novan', '6289619182272', 'Yes-No-Penerima-new'], ['Ibu Sri /Icha', '6281297162339', 'Yes-No-Penerima-new'], ['Rizal Sihabudin', '6289699019657', 'Yes-No-Penerima-new'], ['Dina Mariyana', '6285697497028', 'Yes-No-Penerima-new'], ['Revita AN', '6281373103624', 'Yes-No-Penerima-new'], ['Novia Kurniawati', '628812853401', 'Yes-No-Penerima-new'], ['Dessy', '6287880708772', 'Yes-No-Penerima-new'], ['Tommy', '6281310858694', 'Yes-No-Penerima-new'], ['Mellya Husin', '62811927908', 'Yes-No-Penerima-new'], ['Daniel', '628993867726', 'Yes-No-Penerima-new']];
-  for(let i = 0; i < ll.length; i++) {
-    let name = ll[i][0];
-    let phone = ll[i][1];
-    let reason = ll[i][2];
-    let start_time = new Date();
-    var start_time_fm = (new Date ((new Date((new Date(start_time)).toISOString() )).getTime() - ((start_time).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
-    let sql = `INSERT INTO wa_blast_blacklist (phone, name, reason, status, update_time)
-               VALUES ('`+phone+`', '`+name+`', '`+reason+`', 1, '`+start_time_fm+`')`;
+	let ll = [['Marvels Kitchen', '6281367533692', 'No-No-Pengirim-old'], ['Nurul Aulia', '6281271644580', 'Yes-No-Penerima-new']]
+	for(let i = 0; i < ll.length; i++) {
+		let name = ll[i][0];
+		let phone = ll[i][1];
+		let reason = ll[i][2];
+		let start_time = new Date();
+		var start_time_fm = (new Date ((new Date((new Date(start_time)).toISOString() )).getTime() - ((start_time).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
+		let sql = `INSERT INTO wa_blast_blacklist (phone, name, reason, status, update_time)
+	       VALUES ('`+phone+`', '`+name+`', '`+reason+`', 1, '`+start_time_fm+`')`;
 
-    queryAsync(sql).then(function(results) {
-        console.log("1 record inserted");
-    });
-  }
+		queryAsync(sql).then(function(results) {
+			console.log("1 record inserted");
+		});
+	}
 }
 
 function pad(num, size) {
-    num = num.toString();
-    while (num.length < size) num = "0" + num;
-    return num;
+	num = num.toString();
+	while (num.length < size) num = "0" + num;
+	return num;
 }

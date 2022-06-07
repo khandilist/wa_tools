@@ -18,6 +18,14 @@
           <input id="date" type="text" class="form-control" name="dates" />
 	  <% } %>
       </div>
+      <label for="date" class="col-auto col-form-label">Search by Receiver</label>
+      <div class="col-3">
+	  <% if (phone) { %>
+	  <input id="phone" type="text" class="form-control" name="phone" value="<%= phone %>" />
+	  <% } else { %>
+          <input id="phone" type="text" class="form-control" name="phone" />
+	  <% } %>
+      </div>
   </div>
   <div class="col-12 row">
       <label class="col-auto col-form-label">Select Status</label>
@@ -74,7 +82,7 @@
   <ul class="pagination justify-content-center">
 <% if (pagination.current > 0) { %>
   <li class="page-item">
-    <a class="page-link" href="?page=<%= pagination.current-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&summary_id=<%= summary_id %>" tabindex="-1" aria-disabled="true">Previous</a>
+    <a class="page-link" href="?page=<%= pagination.current-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&phone=<%= phone %>&summary_id=<%= summary_id %>" tabindex="-1" aria-disabled="true">Previous</a>
   </li>
   <% } else { %>
   <li class="page-item disabled">
@@ -83,7 +91,7 @@
   <% } %>
 
   <% if (pagination.current-5 > 0) { %>
-  <li class="page-item"><a class="page-link" href="?page=0&sdate=<%= sdate %>&edate=<%= edate %>&summary_id=<%= summary_id %>">1</a></li>
+  <li class="page-item"><a class="page-link" href="?page=0&sdate=<%= sdate %>&edate=<%= edate %>&phone=<%= phone %>&summary_id=<%= summary_id %>">1</a></li>
   <% } %>
 
   <% if (pagination.current-5 > 1) { %>
@@ -95,7 +103,7 @@
   <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
   <% } else { %>
     <% if (i > pagination.current-5 && i < pagination.current+5) { %>
-      <li class="page-item"><a class="page-link" href="?page=<%= i-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&summary_id=<%= summary_id %>"><%= i %></a></li>
+      <li class="page-item"><a class="page-link" href="?page=<%= i-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&phone=<%= phone %>&summary_id=<%= summary_id %>"><%= i %></a></li>
     <% } %>
   <% } %>
   <% } %>
@@ -105,12 +113,12 @@
   <% } %>
 
   <% if (pagination.current+4 < pagination.numPages) { %>
-  <li class="page-item"><a class="page-link" href="?page=<%= pagination.numPages-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&summary_id=<%= summary_id %>"><%= pagination.numPages %></a></li>
+  <li class="page-item"><a class="page-link" href="?page=<%= pagination.numPages-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&phone=<%= phone %>&summary_id=<%= summary_id %>"><%= pagination.numPages %></a></li>
   <% } %>
 
   <% if (pagination.current < pagination.numPages-1) { %>
   <li class="page-item">
-    <a class="page-link" href="?page=<%= pagination.current+1 %>&sdate=<%= sdate %>&edate=<%= edate %>&summary_id=<%= summary_id %>">Next</a>
+    <a class="page-link" href="?page=<%= pagination.current+1 %>&sdate=<%= sdate %>&edate=<%= edate %>&phone=<%= phone %>&summary_id=<%= summary_id %>">Next</a>
   </li>
   <% } else { %>
   <li class="page-item disabled">
@@ -139,6 +147,15 @@ $(function(){
     urlParams.set('sdate', sdate);
     urlParams.set('edate', edate);
     window.location.search = urlParams;
+  });
+  $('input#phone').on('keydown', function(e) {
+    if (e.which == 13) {
+      let value = $(this).val();
+      e.preventDefault();
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('phone', value);
+      window.location.search = urlParams;
+    }
   });
   $('input[name="status"]').change(function() {
     const urlParams = new URLSearchParams(window.location.search);

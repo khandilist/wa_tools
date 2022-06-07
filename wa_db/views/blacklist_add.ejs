@@ -16,18 +16,42 @@
       <form method="POST">
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
-	  <input type="text" class="form-control" id="name" placeholder="Nama yang mau di blacklist" name="name" value="<%= locals.name %>" maxlength="50">
+	  <input type="text" class="form-control" id="name" placeholder="Nama yang mau di blacklist" name="name" value="<%= locals.name %>" maxlength="50" required>
         </div>
         <div class="mb-3">
           <label for="phone" class="form-label">Phone</label>
-	  <input type="number" class="form-control" id="phone" placeholder="Nomor yang mau di blacklist" name="phone" value="<%= locals.phone %>">
+	  <input type="number" class="form-control" id="phone" placeholder="Nomor yang mau di blacklist" name="phone" value="<%= locals.phone %>" required>
           <% if (locals.invalid_phone) { %>
 	  <div class="invalid-feedback d-block">Phone number already exists.</div>
           <% } %>
         </div>
         <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+	  <br/>
+	  <div class="form-check form-check-inline">
+	    <input class="form-check-input" type="radio" name="role" id="inlineRole1" value="1" required <% if (locals.role == 1) { %>checked<% } %>>
+            <label class="form-check-label" for="inlineRole1">Penerima</label>
+          </div>
+	  <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="role" id="inlineRole2" value="2" required <% if (locals.role == 2) { %>checked<% } %>>
+            <label class="form-check-label" for="inlineRole2">Pengirim</label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="role" class="form-label">Skip Message</label>
+	  <br/>
+	  <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" value="1" name="skip_resi" id="skipResi" <% if (locals.skip_resi == 1) { %>checked<% } %>>
+	    <label class="form-check-label" for="skipResi">Skip Resi</label>
+          </div>
+	  <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" value="1" name="skip_product" id="skipProduct" <% if (locals.skip_product == 1) { %>checked<% } %>>
+	    <label class="form-check-label" for="skipProduct">Skip Product</label>
+          </div>
+        </div>
+        <div class="mb-3">
           <label for="reason" class="form-label">Reason</label>
-	  <textarea class="form-control" id="reason" placeholder="Alasan kenapa di blacklist" name="reason" maxlength="255"><%= locals.reason %></textarea>
+	  <textarea class="form-control" id="reason" placeholder="Alasan kenapa di blacklist" name="reason" maxlength="255" required><%= locals.reason %></textarea>
         </div>
         <div class="mb-3" hidden>
           <label for="formFile" class="form-label">Upload Data List</label>

@@ -18,6 +18,25 @@
           <input id="date" type="text" class="form-control" name="dates" />
 	  <% } %>
       </div>
+      <label for="date" class="col-auto col-form-label">Select Category</label>
+      <div class="col-3">
+        <select id="category" class="form-select" name="category">
+	<option value="">---Select Category---</option>
+	<% for (const [key, value] of Object.entries(category_dict)) { %>
+	<option value="<%= key %>" <% if (key == category) { %>selected<% } %>><%= value %></option>
+	<% } %>
+	</select>
+      </div>
+  </div>
+  <div class="col-12 row mb-2">
+      <label for="phone" class="col-auto col-form-label">Search by Phone</label>
+      <div class="col-3">
+	  <% if (phone) { %>
+	  <input id="phone" type="text" class="form-control" name="phone" value="<%= phone %>" />
+	  <% } else { %>
+          <input id="phone" type="text" class="form-control" name="phone" />
+	  <% } %>
+       </div>
   </div>
   <div class="col-12 row mb-3">
       <button id="btn-download" type="button" class="col-auto btn btn-sm btn-primary mx-3">Download CSV</button>
@@ -27,6 +46,7 @@
       <thead>
         <tr>
           <th scope="col">#</th>
+          <th scope="col">Category</th>
           <th scope="col">Phone</th>
           <th scope="col">Start</th>
           <th scope="col">End</th>
@@ -43,6 +63,7 @@
 	<% for(var i=0; i < records.length; i++) { %>
         <tr>
 	  <th scope="row"><a href="/records/?summary_id=<%= records[i].id %>"><%= records[i].id %></a></th>
+	  <td><%= category_dict[records[i].category] %></td>
 	  <td><%= records[i].phone %></td>
           <td><%= moment(records[i].start).format('dddd, MMM D YYYY, HH:mm') %></td>
           <td><%= moment(records[i].end).format('dddd, MMM D YYYY, HH:mm') %></td>
@@ -61,7 +82,7 @@
   <ul class="pagination justify-content-center">
 <% if (pagination.current > 0) { %>
   <li class="page-item">
-    <a class="page-link" href="?page=<%= pagination.current-1 %>&sdate=<%= sdate %>&edate=<%= edate %>" tabindex="-1" aria-disabled="true">Previous</a>
+    <a class="page-link" href="?page=<%= pagination.current-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&category=<%= category %>&phone=<%= phone %>" tabindex="-1" aria-disabled="true">Previous</a>
   </li>
   <% } else { %>
   <li class="page-item disabled">
@@ -70,7 +91,7 @@
   <% } %>
 
   <% if (pagination.current-5 > 0) { %>
-  <li class="page-item"><a class="page-link" href="?page=0&sdate=<%= sdate %>&edate=<%= edate %>">1</a></li>
+  <li class="page-item"><a class="page-link" href="?page=0&sdate=<%= sdate %>&edate=<%= edate %>&category=<%= category %>&phone=<%= phone %>">1</a></li>
   <% } %>
 
   <% if (pagination.current-5 > 1) { %>
@@ -82,7 +103,7 @@
   <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
   <% } else { %>
     <% if (i > pagination.current-5 && i < pagination.current+5) { %>
-      <li class="page-item"><a class="page-link" href="?page=<%= i-1 %>&sdate=<%= sdate %>&edate=<%= edate %>"><%= i %></a></li>
+      <li class="page-item"><a class="page-link" href="?page=<%= i-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&category=<%= category %>&phone=<%= phone %>"><%= i %></a></li>
     <% } %>
   <% } %>
   <% } %>
@@ -92,12 +113,12 @@
   <% } %>
 
   <% if (pagination.current+4 < pagination.numPages) { %>
-  <li class="page-item"><a class="page-link" href="?page=<%= pagination.numPages-1 %>&sdate=<%= sdate %>&edate=<%= edate %>"><%= pagination.numPages %></a></li>
+  <li class="page-item"><a class="page-link" href="?page=<%= pagination.numPages-1 %>&sdate=<%= sdate %>&edate=<%= edate %>&category=<%= category %>&phone=<%= phone %>"><%= pagination.numPages %></a></li>
   <% } %>
 
   <% if (pagination.current < pagination.numPages-1) { %>
   <li class="page-item">
-    <a class="page-link" href="?page=<%= pagination.current+1 %>&sdate=<%= sdate %>&edate=<%= edate %>">Next</a>
+    <a class="page-link" href="?page=<%= pagination.current+1 %>&sdate=<%= sdate %>&edate=<%= edate %>&category=<%= category %>&phone=<%= phone %>">Next</a>
   </li>
   <% } else { %>
   <li class="page-item disabled">
@@ -126,6 +147,21 @@ $(function(){
     urlParams.set('sdate', sdate);
     urlParams.set('edate', edate);
     window.location.search = urlParams;
+  });
+  $('select#category').change(function() {
+    let value = $(this).val();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('category', value);
+    window.location.search = urlParams;
+  });
+  $('input#phone').on('keydown', function(e) {
+    if (e.which == 13) {
+      let value = $(this).val();
+      e.preventDefault();
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('phone', value);
+      window.location.search = urlParams;
+    }
   });
   $('button#btn-download').click(function() {
     downloadFile();

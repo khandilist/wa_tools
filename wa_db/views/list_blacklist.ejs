@@ -32,6 +32,9 @@
           <th scope="col">#</th>
           <th scope="col">Phone</th>
           <th scope="col">Name</th>
+          <th scope="col">Role</th>
+          <th scope="col">Resi</th>
+          <th scope="col">Product</th>
           <th scope="col">Reason</th>
           <th scope="col">Status</th>
           <th scope="col">Update Time</th>
@@ -41,9 +44,12 @@
       <tbody>
 	<% for(var i=0; i < records.length; i++) { %>
         <tr>
-	  <th scope="row"><a href="#"><%= records[i].id %></a></th>
+	  <th scope="row"><a><%= records[i].id %></a></th>
 	  <td><%= records[i].phone %></td>
 	  <td><%= records[i].name %></td>
+	  <td><%- records[i].role == 1 ? '<span class="badge bg-light text-dark">Penerima</span>' : '<span class="badge bg-secondary">Pengirim</span>' %></td>
+	  <td><%- records[i].resi == 1 ? '<span class="badge rounded-pill bg-danger">V</span>' : '' %></td>
+	  <td><%- records[i].product == 1 ? '<span class="badge rounded-pill bg-danger">V</span>' : '' %></td>
 	  <td><%= records[i].reason %></td>
 	  <td><%- records[i].status == 1 ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>' %></td>
           <td><%= moment(records[i].update_time).format('dddd, MMM D YYYY, HH:mm') %></td>
